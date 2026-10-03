@@ -1,0 +1,230 @@
+{
+  "users": [
+    {
+      "_id": "u_a10370a8f12d9529",
+      "name": "Admin Officer",
+      "email": "admin@bpitindia.edu.in",
+      "passwordHash": "$2a$10$phsDfjpc/y.kijzd1cmn9ema15/foaGhxrBOM63FnqoSU5DJDrQAu",
+      "role": "admin",
+      "createdAt": "2026-09-23T09:28:07.466Z"
+    },
+    {
+      "_id": "u_d8442e7e57012aca",
+      "name": "Faculty Mentor",
+      "email": "faculty@bpitindia.edu.in",
+      "passwordHash": "$2a$10$phsDfjpc/y.kijzd1cmn9eAhpI1VKlenp03ROOjz9aNlzyYXE0ckW",
+      "role": "faculty",
+      "createdAt": "2026-09-23T09:28:07.560Z"
+    },
+    {
+      "_id": "u_45d508a142a6f0f9",
+      "name": "Campus Volunteer",
+      "email": "volunteer@bpitindia.edu.in",
+      "passwordHash": "$2a$10$phsDfjpc/y.kijzd1cmn9eTtR6g0upItkOJMUr3cy2QjzWksxcGGS",
+      "role": "student",
+      "createdAt": "2026-09-23T09:28:07.633Z"
+    },
+    {
+      "_id": "u_2f998d4df5ddf3a2",
+      "name": "Student Member",
+      "email": "student@bpitindia.edu.in",
+      "passwordHash": "$2a$10$phsDfjpc/y.kijzd1cmn9ezZ3yg7a4rRswTzftqlMDBeEDERcF5YS",
+      "role": "student",
+      "createdAt": "2026-09-23T09:28:07.709Z"
+    },
+    {
+      "_id": "u_75cac2219f6c04be",
+      "createdAt": "2026-09-28T11:01:47.484Z",
+      "name": "Manasvi",
+      "email": "manasvi@bpitindia.edu.in",
+      "passwordHash": "$2a$12$h588.HQ1mpeXPxnQ/6471u48GB6Y65trn8ZKXla0pqjJ4gdNvDFd6",
+      "role": "volunteer",
+      "id": "u_75cac2219f6c04be"
+    },
+    {
+      "_id": "u_5ea80f291d44bb0a",
+      "createdAt": "2026-09-28T11:09:05.505Z",
+      "name": "abc",
+      "email": "abc@bpitindia.edu.in",
+      "passwordHash": "$2a$12$ClD/W5K.Ac20vjylWwkXHurg7Rjv0tGuqxkdnLDVrNqEWF9TCQwk2",
+      "role": "faculty"
+    },
+    {
+      "_id": "u_3089e573d6a6f2a6",
+      "createdAt": "2026-09-28T11:12:05.502Z",
+      "name": "admin",
+      "email": "bpitadmin@bpitindia.edu.in",
+      "passwordHash": "$2a$12$WK7caCxNH9ODtZdhPUwx5u2A91xKs5.aBNVOQZ6gxXQVyLI3e5BC6",
+      "role": "admin"
+    },
+    {
+      "_id": "u_d7a6eb2f5e86274f",
+      "createdAt": "2026-10-01T08:27:14.331Z",
+      "name": "Test Student",
+      "email": "newtest1790843233871@bpitindia.edu.in",
+      "passwordHash": "$2a$12$u3rmOmiYzcIbg1ydk86tfO687WZGr9xIk8UBDudwDFrpvG4BTnDBy",
+      "role": "student"
+    },
+    {
+      "_id": "u_9962f8d2d1443c02",
+      "createdAt": "2026-10-01T08:29:15.059Z",
+      "name": "Proxy Tester",
+      "email": "live_test_1790843354612@bpitindia.edu.in",
+      "passwordHash": "$2a$12$YrsyNwCB52qHmMLYtd2FEuS4JVRNP5cMsfgFGB70N0EQVNr3IoSoK",
+      "role": "student"
+    }
+  ],
+  "tickets": [
+    {
+      "_id": "t_08fd7f6f73a0d795",
+      "title": "Wi-Fi Disconnecting in Computer Lab B-204",
+      "description": "The Wi-Fi in Computer Lab B-204 keeps disconnecting every 5 minutes. It is impossible to complete practical coding assignments. Please fix access points.",
+      "location": "Lab Block B, Room 204",
+      "category": "Internet",
+      "priority": "High",
+      "department": "IT Department",
+      "status": "In Progress",
+      "upvoteCount": 14,
+      "createdBy": "u_45d508a142a6f0f9",
+      "aiSummary": "Frequent Wi-Fi connectivity drops disrupting student lab sessions in B-204.",
+      "aiSuggestedAction": "Restart access point B-204 and check DHCP pool exhaustion.",
+      "createdAt": "2026-09-22T09:28:07.710Z"
+    },
+    {
+      "_id": "t_88aa4b8e664fb298",
+      "title": "Water Cooler Leakage Near 2nd Floor Library",
+      "description": "Continuous drinking water leakage from the dispenser near library entrance, causing slippery corridor.",
+      "location": "Main Academic Building, 2nd Floor",
+      "category": "Water",
+      "priority": "Medium",
+      "department": "Maintenance",
+      "status": "Submitted",
+      "upvoteCount": 8,
+      "createdBy": "u_45d508a142a6f0f9",
+      "aiSummary": "Plumbing leak near high-traffic library corridor presenting slip hazard.",
+      "aiSuggestedAction": "Turn off line valve and replace dispensing nozzle gasket.",
+      "createdAt": "2026-09-22T21:28:07.710Z"
+    },
+    {
+      "_id": "t_c90cd2e8163396d0",
+      "title": "Projector Bulb Dead in Seminar Hall 1",
+      "description": "Main ceiling projector bulb has fused before the upcoming department tech symposium.",
+      "location": "Seminar Hall 1, Ground Floor",
+      "category": "Infrastructure",
+      "priority": "Urgent",
+      "department": "Maintenance",
+      "status": "In Review",
+      "upvoteCount": 20,
+      "createdBy": "u_45d508a142a6f0f9",
+      "aiSummary": "Fused projector bulb impeding scheduled presentations in main hall.",
+      "aiSuggestedAction": "Replace 4000-lumen lamp module and test HDMI connection.",
+      "createdAt": "2026-09-23T03:28:07.710Z"
+    },
+    {
+      "_id": "t_b08962204122f7f4",
+      "title": "Broken Bench in Room 301",
+      "description": "Back support detached on the third row bench, screws are exposed.",
+      "location": "Classroom Block, Room 301",
+      "category": "Infrastructure",
+      "priority": "Low",
+      "department": "Maintenance",
+      "status": "Resolved",
+      "upvoteCount": 4,
+      "createdBy": "u_45d508a142a6f0f9",
+      "aiSummary": "Damaged wooden bench with safety hazard in room 301.",
+      "aiSuggestedAction": "Re-screw bracket and polish surface.",
+      "resolvedAt": "2026-09-23T09:28:07.710Z",
+      "createdAt": "2026-09-20T09:28:07.710Z"
+    },
+    {
+      "_id": "t_bd8696cde7650b23",
+      "title": "Street Light Flickering at Hostel Gate",
+      "description": "Outdoor street lamp at the main hostel pathway flickers constantly and shuts down at midnight.",
+      "location": "Hostel Gate Pathway",
+      "category": "Security",
+      "priority": "High",
+      "department": "Electrical",
+      "status": "Submitted",
+      "upvoteCount": 12,
+      "createdBy": "u_45d508a142a6f0f9",
+      "aiSummary": "Unreliable illumination on hostel walkway posing evening safety risk.",
+      "aiSuggestedAction": "Check outdoor ballast and LED transformer.",
+      "createdAt": "2026-09-22T15:28:07.710Z"
+    },
+    {
+      "_id": "t_b363360ed4ebe34a",
+      "upvoteCount": 1,
+      "status": "Submitted",
+      "createdAt": "2026-10-03T10:35:32.892Z",
+      "title": "water cooler leakage",
+      "description": "water cooler has been leaking from past 2 days",
+      "location": "girls common room",
+      "createdBy": "u_a10370a8f12d9529",
+      "category": "Water",
+      "priority": "Low",
+      "department": "Maintenance",
+      "aiSummary": "Automated fallback summary based on keywords.",
+      "aiSuggestedAction": "Assigned to Maintenance for review.",
+      "image": "267b8cfb-e8f9-482d-a81b-7cfa305ad9a9.jpg"
+    },
+    {
+      "_id": "t_96592b0d691d979b",
+      "upvoteCount": 0,
+      "status": "Submitted",
+      "createdAt": "2026-10-03T10:38:51.144Z",
+      "title": "Ac not working in reception",
+      "description": "ac is not working in reception. It is not cooling",
+      "location": "reception",
+      "createdBy": "u_a10370a8f12d9529",
+      "category": "Other",
+      "priority": "High",
+      "department": "Administration",
+      "aiSummary": "Automated fallback summary based on keywords.",
+      "aiSuggestedAction": "Assigned to Administration for review.",
+      "image": "831c0986-9020-4457-83f0-55d90da5a017.jpg"
+    },
+    {
+      "_id": "t_7236938dd8bfecc2",
+      "upvoteCount": 0,
+      "status": "In Review",
+      "createdAt": "2026-10-03T14:29:32.089Z",
+      "title": "broken door",
+      "description": "door is broken",
+      "location": "room 301",
+      "createdBy": "u_a10370a8f12d9529",
+      "category": "Infrastructure",
+      "priority": "High",
+      "department": "Maintenance",
+      "aiSummary": "Automated fallback summary based on keywords.",
+      "aiSuggestedAction": "Assigned to Maintenance for review.",
+      "image": "09793bc4-89ea-4011-b42c-ecf38622e927.jpg"
+    }
+  ],
+  "upvotes": [
+    {
+      "_id": "up_3fdb7b00fbb4",
+      "user": "u_2f998d4df5ddf3a2",
+      "ticket": "t_08fd7f6f73a0d795"
+    },
+    {
+      "_id": "up_410acd743ba6",
+      "user": "u_2f998d4df5ddf3a2",
+      "ticket": "t_c90cd2e8163396d0"
+    },
+    {
+      "_id": "up_7bf297c0960a",
+      "user": "u_3089e573d6a6f2a6",
+      "ticket": "t_c90cd2e8163396d0"
+    },
+    {
+      "_id": "up_85c410b290c6",
+      "user": "u_3089e573d6a6f2a6",
+      "ticket": "t_bd8696cde7650b23"
+    },
+    {
+      "_id": "up_504e67c446bd",
+      "user": "u_a10370a8f12d9529",
+      "ticket": "t_b363360ed4ebe34a"
+    }
+  ]
+}
