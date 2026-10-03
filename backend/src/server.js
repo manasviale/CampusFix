@@ -6,7 +6,6 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
-import { setFallbackActive } from './localDb.js';
 
 import authRoutes from './routes/authRoutes.js';
 import ticketRoutes from './routes/ticketRoutes.js';
@@ -19,33 +18,79 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173' }));
+// ================================
+// Middleware
+// ================================
+
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    credentials: true,
+  })
+);
+
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// Static uploads
+app.use(
+  '/uploads',
+  express.static(path.join(__dirname, '../uploads'))
+);
+
+// ================================
+// Routes
+// ================================
 
 app.use('/api/auth', authRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/insights', insightRoutes);
 
+// ================================
+// Error Handler
+// ================================
+
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 3000;
+// ================================
+// MongoDB Connection
+// ================================
 
-if (process.env.NODE_ENV !== 'test') {
-  const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/campusfix';
+const mongoUri = process.env.MONGODB_URI;
 
-  mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 1500 })
-    .then(() => {
-      console.log(`✅ Connected to MongoDB at ${mongoUri}`);
-      app.listen(PORT, () => console.log(`🚀 CampusFix backend running on http://localhost:${PORT}`));
-    })
-    .catch((err) => {
-      console.warn(`⚡ Local MongoDB not available: ${err.message}`);
-      console.log('📦 Automatically starting with local JSON database (backend/data/db.json)...');
-      setFallbackActive(true);
-      app.listen(PORT, () => console.log(`🚀 CampusFix backend running on http://localhost:${PORT} [Local DB Mode]`));
-    });
+let isConnected = false;
+
+async function connectDB() {
+  if (isConnected) {
+    return;
+  }
+
+  if (!mongoUri) {
+    throw new Error('MONGODB_URI is not configured');
+  }
+
+  await mongoose.connect(mongoUri);
+
+  isConnected = true;
+
+  console.log('✅ Connected to MongoDB');
 }
 
-export default app;
+// ================================
+// Vercel Serverless Handler
+// ================================
+
+export default async function handler(req, res) {
+  try {
+    await connectDB();
+
+    return app(req, res);
+  } catch (error) {
+    console.error('❌ Backend error:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: 'Database connection failed',
+    });
+  }
+}

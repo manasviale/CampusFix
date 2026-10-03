@@ -56,7 +56,7 @@ export function initLocalDb() {
 
   // Pre-seed default users and tickets
   const salt = bcrypt.genSaltSync(10);
-  
+
   const adminId = 'u_' + crypto.randomBytes(8).toString('hex');
   const facultyId = 'u_' + crypto.randomBytes(8).toString('hex');
   const volunteerId = 'u_' + crypto.randomBytes(8).toString('hex');
@@ -363,7 +363,7 @@ export const LocalTicket = {
   findById(id) {
     const ticket = inMemoryDb.tickets.find(t => String(t._id) === String(id));
     const wrapped = wrapDoc(ticket, 'tickets');
-    
+
     return {
       populate() {
         if (wrapped && wrapped.createdBy) {
@@ -407,7 +407,7 @@ export const LocalTicket = {
     return wrapDoc(removed, 'tickets');
   },
 
-   createLocal(data = {}) {
+  createLocal(data = {}) {
     return wrapDoc({
       _id: 't_' + crypto.randomBytes(8).toString('hex'),
       upvoteCount: 0,
@@ -472,7 +472,7 @@ export const LocalUpvote = {
   },
 
   async findOne(query) {
-    const match = inMemoryDb.upvotes.find(u => 
+    const match = inMemoryDb.upvotes.find(u =>
       String(u.user) === String(query.user) && String(u.ticket) === String(query.ticket)
     );
     return wrapDoc(match, 'upvotes');
