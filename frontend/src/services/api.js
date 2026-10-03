@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://campus-fix-u63c.vercel.app/api',
 });
 
 api.interceptors.request.use(
