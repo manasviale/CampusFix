@@ -7,8 +7,8 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': 'https://campus-fix-pied-sigma.vercel.app',
-      '/uploads': 'https://campus-fix-pied-sigma.vercel.app'
+      '/api': 'http://localhost:3000',
+      '/uploads': 'http://localhost:3000'
     }
   }
 });

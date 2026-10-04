@@ -1,9 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://campus-fix-pied-sigma.vercel.app/api',
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
 });
-
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');

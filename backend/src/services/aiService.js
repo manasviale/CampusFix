@@ -1,6 +1,27 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { classifyComplaint as fallbackClassify } from './fallbackClassifier.js';
 
+// claude-3-5-sonnet-20240620 was retired on Oct 28, 2025; use a current model.
+const AI_MODEL = 'claude-sonnet-5-5';
+
+// Safely pull JSON out of a Claude response (handles missing text blocks,
+// markdown fences, or stray text around the JSON object).
+function parseJsonResponse(msg) {
+  const text = (msg?.content || [])
+    .filter(block => block?.type === 'text' && typeof block.text === 'string')
+    .map(block => block.text)
+    .join('')
+    .trim();
+
+  if (!text) throw new Error('Empty AI response');
+
+  const start = text.indexOf('{');
+  const end = text.lastIndexOf('}');
+  if (start === -1 || end <= start) throw new Error('No JSON object found in AI response');
+
+  return JSON.parse(text.slice(start, end + 1));
+}
+
 export async function classifyComplaint(title, description) {
   try {
     const client = new Anthropic({
@@ -8,7 +29,7 @@ export async function classifyComplaint(title, description) {
     });
 
     const msg = await client.messages.create({
-      model: "claude-3-5-sonnet-20240620",
+      model: AI_MODEL,
       max_tokens: 1024,
       system: "You are a complaint classification system for a college campus. Analyze the complaint and return ONLY a JSON object with these exact fields: category (one of: Infrastructure, Electrical, Internet, Cleanliness, Water, Hostel, Security, Laboratory, Library, Other), priority (one of: Low, Medium, High, Urgent), department (one of: Maintenance, IT Department, Electrical, Hostel Administration, Security, Administration, Housekeeping, Library, Other), summary (a brief 1-2 sentence summary), suggestedAction (a specific actionable recommendation). Return ONLY valid JSON, no markdown, no explanation.",
       messages: [
@@ -16,18 +37,8 @@ export async function classifyComplaint(title, description) {
       ],
     });
 
-    const responseText = msg.content[0].text.trim();
-    
-    // Attempt to extract JSON if it was wrapped in markdown somehow
-    let jsonStr = responseText;
-    if (jsonStr.startsWith('```json')) {
-      jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, '').trim();
-    } else if (jsonStr.startsWith('```')) {
-      jsonStr = jsonStr.replace(/```/g, '').trim();
-    }
+    const parsed = parseJsonResponse(msg);
 
-    const parsed = JSON.parse(jsonStr);
-    
     // Basic validation
     if (!parsed.category || !parsed.priority || !parsed.department || !parsed.summary || !parsed.suggestedAction) {
       throw new Error("Missing required fields in AI response");
@@ -47,7 +58,7 @@ export async function generateInsights(ticketData) {
     });
 
     const msg = await client.messages.create({
-      model: "claude-3-5-sonnet-20240620",
+      model: AI_MODEL,
       max_tokens: 1024,
       system: "You are an AI campus administrator assistant. Analyze the provided ticket data and return a JSON object containing: summary (brief overall situation), keyObservations (array of strings), recommendedActions (array of strings). Return ONLY valid JSON, no markdown.",
       messages: [
@@ -55,15 +66,7 @@ export async function generateInsights(ticketData) {
       ],
     });
 
-    const responseText = msg.content[0].text.trim();
-    let jsonStr = responseText;
-    if (jsonStr.startsWith('```json')) {
-      jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, '').trim();
-    } else if (jsonStr.startsWith('```')) {
-      jsonStr = jsonStr.replace(/```/g, '').trim();
-    }
-
-    const parsed = JSON.parse(jsonStr);
+    const parsed = parseJsonResponse(msg);
     parsed.generatedAt = new Date();
     return parsed;
   } catch (error) {
@@ -165,7 +168,7 @@ export function fallbackDetectDuplicates(newComplaint, candidates) {
     const catMatch = (cand.category && (cand.category.toLowerCase() === inferredCategory.toLowerCase())) ? 0.15 : 0;
 
     let score = (titleSim * 0.40) + (locSim * 0.35) + (descSim * 0.15) + catMatch;
-    
+
     // Strong boost when location strongly matches and topic overlaps
     if (locSim >= 0.7 && (titleSim >= 0.15 || descSim >= 0.15 || catMatch > 0)) {
       score = Math.max(score, 0.65);
@@ -259,27 +262,33 @@ Existing Unresolved Complaints:
 ${JSON.stringify(candidateSummary, null, 2)}`;
 
     const msg = await client.messages.create({
-      model: "claude-3-5-sonnet-20240620",
+      model: AI_MODEL,
       max_tokens: 1024,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }]
     });
 
-    const responseText = msg.content[0].text.trim();
-    let jsonStr = responseText;
-    if (jsonStr.startsWith('```json')) {
-      jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, '').trim();
-    } else if (jsonStr.startsWith('```')) {
-      jsonStr = jsonStr.replace(/```/g, '').trim();
-    }
+    const parsed = parseJsonResponse(msg);
 
-    const parsed = JSON.parse(jsonStr);
+    // Only accept IDs that actually belong to the candidates we sent
+    const validIds = new Set(candidateSummary.map(c => c.id));
+    const similarIds = (Array.isArray(parsed.similarIds) ? parsed.similarIds : [])
+      .map(String)
+      .filter(id => validIds.has(id));
+    const rawDuplicateId = parsed.duplicateId ? String(parsed.duplicateId) : null;
+    const duplicateId = (rawDuplicateId && validIds.has(rawDuplicateId)) ? rawDuplicateId : (similarIds[0] || null);
+    const isDuplicate = !!parsed.isDuplicate && !!duplicateId;
+    const rawConfidence = Number(parsed.confidence);
+    const confidence = Number.isFinite(rawConfidence)
+      ? Math.min(1, Math.max(0, rawConfidence))
+      : (isDuplicate ? 0.85 : 0);
+
     const result = {
-      isDuplicate: !!parsed.isDuplicate,
-      duplicateId: parsed.duplicateId || (parsed.similarIds && parsed.similarIds[0]) || null,
-      similarIds: Array.isArray(parsed.similarIds) ? parsed.similarIds : [],
-      confidence: parsed.confidence || (parsed.isDuplicate ? 0.85 : 0),
-      reason: parsed.reason || (parsed.isDuplicate ? 'AI matched a similar existing complaint.' : 'No duplicate found.')
+      isDuplicate,
+      duplicateId: isDuplicate ? duplicateId : null,
+      similarIds,
+      confidence,
+      reason: parsed.reason || (isDuplicate ? 'AI matched a similar existing complaint.' : 'No duplicate found.')
     };
 
     duplicateCache.set(cacheKey, { timestamp: Date.now(), result });
